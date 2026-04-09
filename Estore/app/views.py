@@ -29,6 +29,24 @@ class ProductAPI(APIView):
             serializers.save()
             return Response(serializers.data)
         return Response(serializers.errors)
+    
+    #Patch-Method---------------------------------------------------------------------------------
+    def patch(self,request,id):
+        products=self.get_object(id)
+        serializers=ProductSerializer(products,data=request.data, partial= True)
+        if serializers.is_valid():
+            serializers.save()
+            return Response(serializers.data)
+        return Response(serializers.errors)
+    
+    #Delete-Method------------------------------------------------------------------------------
+    def delete(self,request, id):
+        products=self.get_object(id)
+        
+        products.delete()
+        return Response({"message":"Product deleted successfully!"}, status=status.HTTP_204_NO_CONTENT)
+        
+
 
 
     # Get-Method----------------------------------------------------------------------------------
