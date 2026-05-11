@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Login</title>
+
+<style>
+body {
+    margin:0;
+    font-family:Arial;
+    background:linear-gradient(135deg,#4facfe,#00f2fe);
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.card {
+    background:rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    padding:30px;
+    border-radius:15px;
+    width:320px;
+    text-align:center;
+    color:white;
+}
+
+input {
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+    border:none;
+    border-radius:8px;
+}
+
+button {
+    width:100%;
+    padding:10px;
+    background:#007bff;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+button:hover { background:#0056b3; }
+
+a { color:#fff; font-size:14px; }
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+<h2>Login</h2>
+
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<p id="msg"></p>
+
+<p>
+<a href="signup.html">Create account</a><br>
+<a href="otp.html">Verify OTP</a>
+</p>
+</div>
+
+<script>
+async function login(){
+let res = await fetch("http://127.0.0.1:8000/login/",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+credentials:"include",
+body:JSON.stringify({
+email:email.value,
+password:password.value
+})
+});
+
+let data = await res.json();
+msg.innerText = data.Message || data.error;
+}
+</script>
+
+</body>
+</html>

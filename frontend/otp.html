@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>OTP</title>
+
+<style>
+body {
+    margin:0;
+    font-family:Arial;
+    background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.card {
+    background:rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    padding:30px;
+    border-radius:15px;
+    width:320px;
+    text-align:center;
+}
+
+input {
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+    border:none;
+    border-radius:8px;
+}
+
+button {
+    padding:10px;
+    margin:5px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.verify { background:#007bff; color:white; }
+.resend { background:#ffc107; }
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+<h2>Verify OTP</h2>
+
+<input id="otp" placeholder="Enter OTP">
+
+<button class="verify" onclick="verify()">Verify</button>
+<button class="resend" onclick="resend()">Resend</button>
+
+<p id="msg"></p>
+</div>
+
+<script>
+let email = localStorage.getItem("email");
+
+async function verify(){
+let res = await fetch("http://127.0.0.1:8000/verify-otp/",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({email:email,otp:otp.value})
+});
+let data = await res.json();
+msg.innerText = data.message || data.error;
+
+if(res.ok){
+window.location.href="reset.html";
+}
+}
+
+async function resend(){
+let res = await fetch("http://127.0.0.1:8000/send-otp/",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({email:email})
+});
+let data = await res.json();
+msg.innerText = data.message || data.error;
+}
+</script>
+
+</body>
+</html>

@@ -1,5 +1,10 @@
 from rest_framework import serializers
-from .models import Product
+from .models import Product, Category, Review
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Category
+        fields='__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,6 +27,15 @@ class ProductSerializer(serializers.ModelSerializer):
         if len(value)<10:
             raise serializers.ValidationError("Product Description should be more than 10 characters long! ")
         return value
+
+class ReviewSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+
+    class Meta:
+        model = Review
+        fields = '__all__'
+        read_only_fields = ['user', 'product', 'created_at']
+            
     
 
     

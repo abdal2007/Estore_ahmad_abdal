@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Verify OTP</title>
+
+<style>
+body {
+    margin:0;
+    font-family: Arial;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    height: 100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.card {
+    background: rgba(255,255,255,0.2);
+    padding: 30px;
+    border-radius: 15px;
+    width: 320px;
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    margin: 10px 0;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #007bff;
+    color: white;
+}
+
+#msg {
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>Verify OTP</h2>
+
+    <input id="otp" placeholder="Enter OTP">
+
+    <button onclick="verify()">Verify OTP</button>
+
+    <p id="msg"></p>
+</div>
+
+<script>
+let email = localStorage.getItem("email");
+
+async function verify(){
+
+const otp = document.getElementById("otp").value;
+const msg = document.getElementById("msg");
+
+const res = await fetch("http://127.0.0.1:8000/verify-otp/",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({email, otp})
+});
+
+const data = await res.json();
+
+if(res.ok){
+    msg.innerText = "OTP Verified 🎉 Account Activated";
+    msg.style.color = "green";
+
+    setTimeout(()=>{
+        window.location.href = "login.html";
+    }, 1500);
+
+} else {
+    msg.innerText = data.error;
+    msg.style.color = "red";
+}
+}
+</script>
+
+</body>
+</html>

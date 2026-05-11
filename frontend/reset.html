@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Reset Password</title>
+
+<style>
+body {
+    margin:0;
+    font-family:Arial;
+    background:linear-gradient(135deg,#43e97b,#38f9d7);
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.card {
+    background:rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    padding:30px;
+    border-radius:15px;
+    width:320px;
+    text-align:center;
+}
+
+input {
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+    border:none;
+    border-radius:8px;
+}
+
+button {
+    width:100%;
+    padding:10px;
+    background:#28a745;
+    color:white;
+    border:none;
+    border-radius:8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+<h2>Reset Password</h2>
+
+<input id="password" type="password" placeholder="New Password">
+
+<button onclick="resetPass()">Reset</button>
+
+<p id="msg"></p>
+</div>
+
+<script>
+let email = localStorage.getItem("email");
+
+async function resetPass(){
+let res = await fetch("http://127.0.0.1:8000/reset-password/",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+email:email,
+password:password.value
+})
+});
+
+let data = await res.json();
+msg.innerText = data.message || data.error;
+
+if(res.ok){
+window.location.href="login.html";
+}
+}
+</script>
+
+</body>
+</html>

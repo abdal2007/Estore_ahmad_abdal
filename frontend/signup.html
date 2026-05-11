@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Signup</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    width: 350px;
+    padding: 30px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    border-radius: 15px;
+    text-align: center;
+    color: white;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #28a745;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: #1f7a35;
+}
+
+#msg {
+    margin-top: 10px;
+    min-height: 20px;
+}
+
+.success { color: #00ffae; }
+.error { color: #ff6b6b; }
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>Create Account</h2>
+
+    <input id="username" placeholder="Username">
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+
+    <button id="btn">Sign Up</button>
+
+    <p id="msg"></p>
+</div>
+
+<script>
+// 🔥 PROPER EVENT BINDING (NO onclick issues)
+document.getElementById("btn").addEventListener("click", signup);
+
+async function signup(){
+
+    console.log("SIGNUP STARTED");
+
+    const btn = document.getElementById("btn");
+    const msg = document.getElementById("msg");
+
+    const username = document.getElementById("username").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    // validation
+    if(!username || !email || !password){
+        msg.innerText = "All fields are required";
+        msg.className = "error";
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerText = "Creating account...";
+
+    try {
+
+        const res = await fetch("http://127.0.0.1:8000/signup/", {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({username, email, password})
+        });
+
+        console.log("STATUS:", res.status);
+
+        const data = await res.json().catch(() => ({}));
+
+        console.log("RESPONSE:", data);
+
+        if(res.ok){
+
+            msg.innerText = "OTP sent to email!";
+            msg.className = "success";
+
+            // save email for OTP page
+            localStorage.setItem("email", email);
+
+            btn.innerText = "Redirecting...";
+
+            setTimeout(()=>{
+                window.location.href = "./verify_otp.html";
+            }, 800);
+
+        } else {
+            msg.innerText = data.error || "Signup failed";
+            msg.className = "error";
+        }
+
+    } catch(err){
+        console.log("ERROR:", err);
+        msg.innerText = "Server not running or CORS issue";
+        msg.className = "error";
+    }
+
+    btn.disabled = false;
+    btn.innerText = "Sign Up";
+}
+
+</script>
+
+</body>
+</html>
